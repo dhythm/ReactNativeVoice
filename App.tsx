@@ -1,33 +1,50 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React from 'react';
+import Voice from '@react-native-community/voice';
+import React, { useEffect, useState } from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  View,
 } from 'react-native';
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 
-declare const global: { HermesInternal: null | {} };
+const App: React.FunctionComponent = () => {
+  const [isRecord, setIsRecord] = useState(false);
+  const [voice, setVoice] = useState('');
 
-const App = () => {
+  useEffect(() => {
+    Voice.onSpeechStart = (event) => {
+      console.log('onSpeechStart');
+    };
+    Voice.onSpeechEnd = (event) => {
+      console.log('onSpeechEnd');
+    };
+    Voice.onSpeechResults = (event: any) => {
+      console.log('onSpeechResults');
+      console.log(event.value);
+      setVoice(event.value[0]);
+    };
+    Voice.onSpeechError = (event) => {
+      console.log('_onSpeechError');
+      console.log(event.error);
+    };
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const onRecordVoice = () => {
+    if (isRecord) {
+      Voice.stop();
+    } else {
+      Voice.start('ja-JP');
+    }
+    setIsRecord((prevState) => !prevState);
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -36,39 +53,9 @@ const App = () => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.tsx</Text> to change
-                this screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
+          <Button title={isRecord ? 'stop' : 'start'} onPress={onRecordVoice} />
+          <Text>{voice}</Text>
+          <Button title="clear" onPress={() => setVoice('')} />
         </ScrollView>
       </SafeAreaView>
     </>

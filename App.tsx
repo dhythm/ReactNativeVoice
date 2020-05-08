@@ -7,6 +7,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  View,
 } from 'react-native';
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 
@@ -53,9 +54,16 @@ const App: React.FunctionComponent = () => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <Header />
-          <Button title={isRecord ? 'stop' : 'start'} onPress={onRecordVoice} />
-          <Text>{voice}</Text>
-          <Button title="clear" onPress={() => setVoice('')} />
+          <View style={{ alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', marginBottom: 8 }}>
+              <Button
+                title={isRecord ? 'stop' : 'start'}
+                onPress={onRecordVoice}
+              />
+              <Button title="clear" onPress={() => setVoice('')} />
+            </View>
+            <Text>{voice}</Text>
+          </View>
         </ScrollView>
       </SafeAreaView>
     </>

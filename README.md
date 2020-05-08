@@ -3,4 +3,8 @@ npx react-native init ReactNativeVoice --template react-native-template-typescri
 
 yarn add @react-native-community/voice
 cd ios && pod install && cd ..
+
+# Update info.plist
+
+yarn start
 ```
